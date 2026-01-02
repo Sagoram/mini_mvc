@@ -1,3 +1,5 @@
+DirectoryIndex index.php
+
 RewriteEngine On
 # Rediriger toutes les requêtes vers index.php (sauf fichiers existants)
 RewriteCond %{REQUEST_FILENAME} !-f

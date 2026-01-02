@@ -22,10 +22,13 @@ class Database
 
         try {
             $this->dbh = new PDO(
-                "mysql:host={$configData['DB_HOST']};dbname={$configData['DB_NAME']};charset=utf8",
+                "mysql:host={$configData['DB_HOST']};port={$configData['DB_PORT']};dbname={$configData['DB_NAME']};charset=utf8",
                 $configData['DB_USERNAME'],
                 $configData['DB_PASSWORD'],
-                array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING) // Affiche les erreurs SQL à l'écran
+                array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING, // Affiche les erreurs SQL à l'écran
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+                )
             );
         } catch (\Exception $exception) {
             echo 'Erreur de connexion...<br>';

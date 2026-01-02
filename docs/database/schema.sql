@@ -31,7 +31,7 @@ CREATE TABLE Admin (
 CREATE TABLE Produits (
     id_produit INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(150) NOT NULL,
-    decription TEXT,
+    description TEXT,
     prix DECIMAL(10,2) NOT NULL CHECK (prix > 0),
     stock INT NOT NULL CHECK (stock >= 0),
     image VARCHAR(255),
@@ -46,38 +46,38 @@ CREATE TABLE Produits (
 );
 
 CREATE TABLE Commandes (
-    id_commandes INT AUTO_INCREMENT PRIMARY KEY,
-    statu ENUM('en_attente','en_cours','livree','annulee') NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    statut ENUM('en_attente','en_cours','livree','annulee') NOT NULL,
     montant_total DECIMAL(10,2) NOT NULL CHECK (montant_total >= 0),
-    adress_livraison VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE passer (
-    id_commandes INT NOT NULL,
-    id_clients INT NOT NULL,
+    id_commande INT NOT NULL,
+    id_client INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_commandes, id_clients),
-    FOREIGN KEY (id_commandes) REFERENCES Commandes(id_commandes)
+    PRIMARY KEY (id_commande, id_client),
+    FOREIGN KEY (id_commande) REFERENCES Commandes(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_clients) REFERENCES Clients(id_clients)
+    FOREIGN KEY (id_client) REFERENCES Clients(id_clients)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 CREATE TABLE Inclure (
     id_produit INT NOT NULL,
-    id_commandes INT NOT NULL,
+    id_commande INT NOT NULL,
+    quantite INT NOT NULL DEFAULT 1,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_produit, id_commandes),
+    PRIMARY KEY (id_produit, id_commande),
     FOREIGN KEY (id_produit) REFERENCES Produits(id_produit)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_commandes) REFERENCES Commandes(id_commandes)
+    FOREIGN KEY (id_commande) REFERENCES Commandes(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -91,7 +91,7 @@ INSERT INTO Categories (nom, description, image) VALUES
 ('Enfants', 'Vélos pour enfants', 'kids.jpg');
 
 -- 25 produits répartis dans les catégories
-INSERT INTO Produits (nom, decription, prix, stock, image, disponibilite, id_cat) VALUES
+INSERT INTO Produits (nom, description, prix, stock, image, disponibilite, id_cat) VALUES
 ('E-Bike 500', 'Vélo électrique puissant', 1200.00, 10, 'ebike500.jpg', TRUE, 1),
 ('E-Bike 700', 'Vélo électrique autonomie longue', 1500.00, 8, 'ebike700.jpg', TRUE, 1),
 ('E-Bike City', 'Vélo électrique urbain', 1100.00, 12, 'ebikecity.jpg', TRUE, 1),
@@ -132,23 +132,23 @@ INSERT INTO Admin (username, mdp, roles, email) VALUES
 ('superadmin', 'superpass', 'super_admin', 'superadmin@smartbike.com');
 
 -- 10 commandes
-INSERT INTO Commandes (statu, montant_total, adress_livraison) VALUES
-('en_attente', 1200.00, '1 rue de Paris'),
-('livree', 350.00, '2 avenue Lyon'),
-('en_cours', 900.00, '3 boulevard Nice'),
-('annulee', 50.00, '4 place Lille'),
-('livree', 800.00, '5 impasse Nantes'),
-('en_attente', 450.00, '1 rue de Paris'),
-('en_cours', 700.00, '2 avenue Lyon'),
-('livree', 400.00, '3 boulevard Nice'),
-('en_attente', 160.00, '4 place Lille'),
-('livree', 140.00, '5 impasse Nantes');
+INSERT INTO Commandes (statut, montant_total) VALUES
+('en_attente', 1200.00),
+('livree', 350.00),
+('en_cours', 900.00),
+('annulee', 50.00),
+('livree', 800.00),
+('en_attente', 450.00),
+('en_cours', 700.00),
+('livree', 400.00),
+('en_attente', 160.00),
+('livree', 140.00);
 
 -- Liaisons passer (commandes-clients)
-INSERT INTO passer (id_commandes, id_clients) VALUES
+INSERT INTO passer (id_commande, id_client) VALUES
 (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 1), (7, 2), (8, 3), (9, 4), (10, 5);
 
 -- Liaisons Inclure (commandes-produits, exemple)
-INSERT INTO Inclure (id_produit, id_commandes) VALUES
-(1, 1), (2, 1), (7, 2), (4, 3), (10, 4), (5, 5), (6, 6), (8, 7), (13, 8), (14, 9), (15, 10),
-(3, 2), (9, 3), (11, 4), (12, 5), (16, 6), (17, 7), (18, 8), (19, 9), (20, 10);
+INSERT INTO Inclure (id_produit, id_commande, quantite) VALUES
+(1, 1, 1), (2, 1, 1), (7, 2, 1), (4, 3, 1), (10, 4, 1), (5, 5, 1), (6, 6, 1), (8, 7, 1), (13, 8, 1), (14, 9, 1), (15, 10, 1),
+(3, 2, 1), (9, 3, 1), (11, 4, 1), (12, 5, 1), (16, 6, 1), (17, 7, 1), (18, 8, 1), (19, 9, 1), (20, 10, 1);

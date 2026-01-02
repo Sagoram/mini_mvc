@@ -11,15 +11,13 @@ use Mini\Models\User;
 // Déclare la classe finale HomeController qui hérite de Controller
 final class HomeController extends Controller
 {
-    // Déclare la méthode d'action par défaut qui ne retourne rien
+    // Affiche la page d'accueil avec les derniers produits
     public function index(): void
     {
-        // Appelle le moteur de rendu avec la vue et ses paramètres
-        $this->render('home/index', params: [
-            // Définit le titre transmis à la vue
-            'title' => 'Mini MVC',
-            'prenom' => 'Toto',
-            'prenom2' => 'Tata',
+        $products = \Mini\Models\Product::getAll();
+        $this->render('home/index', [
+            'title' => 'Accueil',
+            'products' => $products,
         ]);
     }
 
